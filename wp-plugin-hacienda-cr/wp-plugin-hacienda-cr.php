@@ -2,6 +2,8 @@
 /*
     Plugin Name: Consulta Céd - Hacienda CR
     Description: Un plugin de WordPress que carga un widget con un formulario AJAX.
+    Version: 0.0.1
+    Author: Pablo CY.
 */
 
 //Accion Hook
@@ -19,7 +21,7 @@ function wrap_query_ID_hacienda_context(){
             <label for="identificacion">Identificación Nacional:</label>
             </br>
             <input type="text" id="identificacion" name="identificacion">
-            <input type="submit" value="Consultar">
+            <input class="button button-secondary" type="submit" value="Consultar">
         </form>
         <div id="resultado"></div>
         <script>
@@ -31,11 +33,15 @@ function wrap_query_ID_hacienda_context(){
                         url: 'https://api.hacienda.go.cr/fe/ae',
                         data: { identificacion: identificacion },
                         dataType: 'json',
+                        beforeSend: function() {
+                            $('#resultado').text('Cargando...');
+                        },
                         success: function(data) {
                             let thisHTML = "Identificación no encontrada.";
                             if(data){
                                 thisHTML =  "<p>Nombre del dueño del Céd: " + data.nombre + "</p>";
                                 thisHTML += "<p>Tipo de Céd: " + data.tipoIdentificacion + "</p>";
+                                thisHTML += "<p>Tributación: " + data.situacion.administracionTributaria + "</p>";
 
                                 $('#resultado').html(thisHTML);
                             }else{
